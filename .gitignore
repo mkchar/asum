@@ -1,0 +1,7 @@
+
+flake.lock
+.direnv
+.gopath
+
+app.db
+app.yaml

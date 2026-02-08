@@ -1,0 +1,612 @@
+basePath: /v1
+definitions:
+  auth.ConfirmCodeReq:
+    properties:
+      email:
+        type: string
+    required:
+    - email
+    type: object
+  auth.ConfirmResp:
+    properties:
+      message:
+        type: string
+      user:
+        $ref: '#/definitions/auth.UserInfo'
+    type: object
+  auth.LoginReq:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  auth.LoginResp:
+    properties:
+      refreshToken:
+        type: string
+      token:
+        type: string
+      user:
+        $ref: '#/definitions/auth.UserInfo'
+    type: object
+  auth.RefreshReq:
+    properties:
+      refreshToken:
+        type: string
+    required:
+    - refreshToken
+    type: object
+  auth.RefreshResp:
+    properties:
+      refreshToken:
+        type: string
+      token:
+        type: string
+    type: object
+  auth.RegisterReq:
+    properties:
+      email:
+        type: string
+      name:
+        maxLength: 50
+        minLength: 2
+        type: string
+      password:
+        minLength: 8
+        type: string
+    required:
+    - email
+    - name
+    - password
+    type: object
+  auth.RegisterResp:
+    properties:
+      message:
+        type: string
+      userId:
+        type: integer
+    type: object
+  auth.ResetPasswordConfirmReq:
+    properties:
+      newPassword:
+        minLength: 8
+        type: string
+      token:
+        type: string
+    required:
+    - newPassword
+    - token
+    type: object
+  auth.ResetPasswordReq:
+    properties:
+      email:
+        type: string
+    required:
+    - email
+    type: object
+  auth.UserInfo:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      level:
+        type: integer
+      name:
+        type: string
+    type: object
+  auth.VerifyReq:
+    properties:
+      email:
+        type: string
+    required:
+    - email
+    type: object
+  auth.VerifyResp:
+    properties:
+      expiresIn:
+        type: integer
+      message:
+        type: string
+    type: object
+  engine.Response:
+    properties:
+      code:
+        example: 0
+        type: integer
+      data: {}
+      msg:
+        example: ok
+        type: string
+    type: object
+  ip2.ASN:
+    properties:
+      number:
+        type: integer
+      org:
+        type: string
+    type: object
+  ip2.BatchIPResp:
+    properties:
+      quota:
+        type: integer
+      result:
+        items:
+          $ref: '#/definitions/ip2.GetIP'
+        type: array
+    type: object
+  ip2.BatchIps:
+    properties:
+      apiKey:
+        type: string
+      ips:
+        items:
+          type: string
+        type: array
+      lang:
+        type: string
+    type: object
+  ip2.City:
+    properties:
+      name:
+        type: string
+    type: object
+  ip2.Continent:
+    properties:
+      code:
+        type: string
+      name:
+        type: string
+    type: object
+  ip2.Country:
+    properties:
+      iso2:
+        type: string
+      name:
+        type: string
+    type: object
+  ip2.GetIP:
+    properties:
+      asn:
+        $ref: '#/definitions/ip2.ASN'
+      city:
+        $ref: '#/definitions/ip2.City'
+      continent:
+        $ref: '#/definitions/ip2.Continent'
+      country:
+        $ref: '#/definitions/ip2.Country'
+      err:
+        type: string
+      ip:
+        type: string
+      location:
+        $ref: '#/definitions/ip2.Location'
+      network:
+        $ref: '#/definitions/ip2.Network'
+      postal:
+        $ref: '#/definitions/ip2.Postal'
+      region:
+        $ref: '#/definitions/ip2.Region'
+      timezone:
+        type: string
+      traits:
+        $ref: '#/definitions/ip2.Traits'
+    type: object
+  ip2.Location:
+    properties:
+      accuracyRadiusKm:
+        type: integer
+      lat:
+        type: number
+      lon:
+        type: number
+    type: object
+  ip2.Network:
+    properties:
+      cidr:
+        type: string
+      ipVersion:
+        type: integer
+    type: object
+  ip2.Postal:
+    properties:
+      code:
+        type: string
+    type: object
+  ip2.Region:
+    properties:
+      iso:
+        type: string
+      name:
+        type: string
+    type: object
+  ip2.Traits:
+    properties:
+      isAnonymousProxy:
+        type: boolean
+      isSatelliteProvider:
+        type: boolean
+    type: object
+  task.CreateTaskReq:
+    properties:
+      name:
+        type: string
+      remark:
+        type: string
+    type: object
+host: api.807780.xyz
+info:
+  contact: {}
+  description: This is a API project.
+  title: asum
+  version: "1.0"
+paths:
+  /app/task:
+    post:
+      consumes:
+      - application/json
+      description: 为当前登录用户创建一个新的任务。
+      parameters:
+      - description: 创建任务参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/task.CreateTaskReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 创建成功
+          schema:
+            $ref: '#/definitions/engine.Response'
+        "400":
+          description: 参数错误 (如名称为空)
+          schema:
+            $ref: '#/definitions/engine.Response'
+        "401":
+          description: 未授权 (Token 缺失或无效)
+          schema:
+            $ref: '#/definitions/engine.Response'
+        "403":
+          description: 禁止操作 (如任务已存在)
+          schema:
+            $ref: '#/definitions/engine.Response'
+      security:
+      - Bearer: []
+      summary: 创建新任务
+      tags:
+      - Task
+  /auth/confirm:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Token参数
+        in: query
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/engine.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/engine.Response'
+      summary: 链接确认
+      tags:
+      - Auth
+  /auth/confirm/{code}:
+    post:
+      consumes:
+      - application/json
+      description: 需同时提供URL路径中的code和Body中的email
+      parameters:
+      - description: 验证码
+        in: path
+        name: code
+        required: true
+        type: string
+      - description: 确认参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/auth.ConfirmCodeReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/engine.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/auth.ConfirmResp'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/engine.Response'
+      summary: 验证码确认
+      tags:
+      - Auth
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: 使用邮箱和密码登录
+      parameters:
+      - description: 登录参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/auth.LoginReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/engine.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/auth.LoginResp'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/engine.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/engine.Response'
+      summary: 用户登录
+      tags:
+      - Auth
+  /auth/refresh:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 刷新参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/auth.RefreshReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/engine.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/auth.RefreshResp'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/engine.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/engine.Response'
+      summary: 刷新 Access Token
+      tags:
+      - Auth
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 注册参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/auth.RegisterReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/engine.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/auth.RegisterResp'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/engine.Response'
+      summary: 用户注册
+      tags:
+      - Auth
+  /auth/reset-password:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 邮箱参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/auth.ResetPasswordReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/engine.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/auth.VerifyResp'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/engine.Response'
+      summary: 请求重置密码
+      tags:
+      - Auth
+  /auth/reset-password/confirm:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 重置参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/auth.ResetPasswordConfirmReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/engine.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/auth.ConfirmResp'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/engine.Response'
+      summary: 确认重置密码
+      tags:
+      - Auth
+  /auth/verify:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 验证参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/auth.VerifyReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/engine.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/auth.VerifyResp'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/engine.Response'
+      summary: 发送验证邮件
+      tags:
+      - Auth
+  /ip/{ip}:
+    get:
+      consumes:
+      - application/json
+      description: 获取指定 IP 的地理位置、ASN、运营商等详细信息
+      parameters:
+      - description: 'IP 地址 (例如: 1.1.1.1)'
+        in: path
+        name: ip
+        required: true
+        type: string
+      - default: en
+        description: '语言代码 (默认: en)'
+        enum:
+        - en
+        - zh-CN
+        in: query
+        name: lang
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 查询成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/engine.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/ip2.GetIP'
+              type: object
+        "400":
+          description: 参数错误
+          schema:
+            $ref: '#/definitions/engine.Response'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/engine.Response'
+      summary: 查询单个 IP 信息
+      tags:
+      - IP
+  /ip/batch:
+    post:
+      consumes:
+      - application/json
+      description: 一次性查询多个 IP 的详细信息
+      parameters:
+      - description: 批量查询参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/ip2.BatchIps'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 查询成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/engine.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/ip2.BatchIPResp'
+              type: object
+        "400":
+          description: 参数错误
+          schema:
+            $ref: '#/definitions/engine.Response'
+      summary: 批量查询 IP 信息
+      tags:
+      - IP
+securityDefinitions:
+  Bearer:
+    description: Type "Bearer" followed by a space and JWT token.
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

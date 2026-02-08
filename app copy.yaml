@@ -1,0 +1,42 @@
+engine:
+  appName:  'asum'
+  env: 'dev'
+  host: '0.0.0.0'
+  port: 8080
+  immutable: true
+  serverHeader: "asum"
+  shutdownTimeout: 10
+
+baseURL: "https://api.807780.xyz"
+
+mail:
+  host: "smtp.163.com"
+  port: 465
+  username: "xxxx@163.com"
+  password: "xxxxxxxxxxxxxxx"
+  from: "xxxx@163.com"
+  fromName: "xxxx"
+  tlsPolicy: "Mandatory"  
+  authType: "Plain"        
+  timeout: 10
+
+redis:
+  addr: "127.0.0.1:6379"
+  password: ""
+  db: 0
+
+postgres:
+
+
+log:
+  json: true
+  format: 
+
+maxmind:
+  asn: './GeoLite2-ASN.mmdb'
+  city: './GeoLite2-City.mmdb'
+  country: './GeoLite2-Country.mmdb'
+
+jwt:
+  secret: NoZuoNoDie
+  issuer: asum

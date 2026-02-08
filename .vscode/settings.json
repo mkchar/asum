@@ -1,0 +1,11 @@
+{
+  "go.useLanguageServer": true,
+  "go.toolsManagement.autoUpdate": false,
+  "go.gopath": "${workspaceFolder}/.gopath",
+  "go.goroot": "",
+  "go.env": {
+    "GOPROXY": "https://goproxy.cn,direct",
+    "GOSUMDB": "sum.golang.google.cn",
+    "GO111MODULE": "on"
+  }
+}
