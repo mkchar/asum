@@ -27,6 +27,7 @@ build:
 	go mod tidy
 	go build -ldflags="-s -w" -o $(OUTPUT) $(MAIN_FILE)
 	@echo "编译成功: $(OUTPUT)"
+	go clean -modcache
 
 start: build
 	@echo "启动程序 $(NAME)..."
@@ -46,7 +47,7 @@ start: build
 	done; \
 	echo "启动失败/超时：$(START_TIMEOUT)s 内 healthz 未通过。请查看日志：$(LOG_FILE)"; \
 	exit 1
-	
+
 stop:
 	@if [ -f "$(PID_FILE)" ]; then \
 		pid=$$(cat $(PID_FILE)); \
