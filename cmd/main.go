@@ -170,7 +170,9 @@ func wireRoutes(
 	app.Get("/", func(c fiber.Ctx) error {
 		return c.Redirect().To("/swagger/index.html")
 	})
-
+	app.Get("/healthz", func(c fiber.Ctx) error {
+		return c.SendString("ok")
+	})
 	// wire services
 	userRepo := user.NewRepository(infra.pg, infra.redis)
 	userSvc := user.NewService(userRepo)
