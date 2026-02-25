@@ -66,3 +66,15 @@ func GetRemoteIP(ctx context.Context) string {
 	}
 	return val
 }
+func StringIndex(s, sub string) int {
+	for i := 0; i+len(sub) <= len(s); i++ {
+		if s[i:i+len(sub)] == sub {
+			return i
+		}
+	}
+	return -1
+}
+
+func StringsContains(s, sub string) bool {
+	return len(sub) > 0 && len(s) >= len(sub) && (func() bool { return (StringIndex(s, sub) >= 0) })()
+}
